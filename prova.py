@@ -2,6 +2,7 @@ from mazegen import generator
 import random
 
 if __name__ == "__main__":
+    """
     grid1 = generator.create_closed_grid(8, 6)
     rng1 = random.Random(1)
     generator.carve_maze(grid1, 8, 6, rng1)
@@ -18,3 +19,7 @@ if __name__ == "__main__":
         print(True)
     else:
         print(False)
+    """
+grid = generator.create_closed_grid(8, 6)
+generator.carve_maze(grid, 8, 6, random.Random(1))
+print(generator.find_path(grid, (0, 0), (7, 5)))

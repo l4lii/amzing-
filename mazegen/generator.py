@@ -1,4 +1,5 @@
 import random
+from collections import deque
 WALL_BITS: dict[str, int] = {"N": 1, "E": 2, "S": 4, "W": 8}
 WALL_OPPOSITE: dict[str, str] = {"N": "S", "E": "W", "S": "N", "W": "E"}
 MOVES: dict[str, tuple[int, int]] = {
@@ -42,3 +43,34 @@ def carve_maze(grid:list[list[int]], width: int, height: int, rng) -> None:
             stack.append((nx, ny))
         else:
             stack.pop()
+
+
+def find_path(grid, entry: tuple[int, int], exit_: tuple[int, int]) -> list[str]:
+    queue = deque([entry])
+    came_from: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
+    height: int = len(grid)
+    width: int = len(grid[0])
+    while queue:
+        x, y = queue.popleft()
+        if (x, y) == exit_:
+            break
+        for direction in MOVES:
+            dx, dy = MOVES[direction]
+            nx = x + dx
+            ny = y + dy
+            if (
+                0 <= nx < width
+                and 0 <= ny < height
+                and not grid[y][x] & WALL_BITS[direction]
+                and (nx, ny) not in came_from
+            ):
+                came_from[(nx, ny)] = ((x, y), direction)
+                queue.append((nx,ny))
+    path: list[str] = []
+    current: tuple[int, int] = exit_
+    while current != entry:
+        previous, direction = came_from[current]
+        path.append(direction)
+        current = previous
+    path.reverse()
+    return path
