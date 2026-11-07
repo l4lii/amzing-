@@ -5,6 +5,8 @@ WALL_OPPOSITE: dict[str, str] = {"N": "S", "E": "W", "S": "N", "W": "E"}
 MOVES: dict[str, tuple[int, int]] = {
     "N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)
 }
+FOUR: list[str] = ["#.#", "#.#", "###", "..#", "..#"]
+TWO: list[str] = ["###", "..#", "###", "#..", "###"]
 
 
 def create_closed_grid(width: int, height: int) -> list[list[int]]:
@@ -23,8 +25,10 @@ def open_wall(grid: list[list[int]], x: int, y: int, direction: str) -> None:
     grid[ny][nx] &= ~WALL_BITS[opposite]
 
 
-def carve_maze(grid:list[list[int]], width: int, height: int, rng) -> None:
+def carve_maze(grid:list[list[int]], width: int, height: int, rng: random.Random, blocked: set[tuple[int, int]]) -> None:
     visited: list[list[bool]] = [[False for _ in range(width)] for _ in range(height)]
+    for bx, by in blocked:
+        visited[by][bx] = True
     visited[0][0] = True
     stack: list[tuple[int, int]] = [(0, 0)]
     while stack:
@@ -46,6 +50,7 @@ def carve_maze(grid:list[list[int]], width: int, height: int, rng) -> None:
 
 
 def find_path(grid, entry: tuple[int, int], exit_: tuple[int, int]) -> list[str]:
+    """finds the path to the end and returns the directions"""
     queue = deque([entry])
     came_from: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
     height: int = len(grid)
@@ -74,3 +79,22 @@ def find_path(grid, entry: tuple[int, int], exit_: tuple[int, int]) -> list[str]
         current = previous
     path.reverse()
     return path
+
+
+def get_pattern_cells(width: int, height: int) -> set[tuple[int, int]]:
+    """Return the cells that draw the 42 pattern"""
+    if width < 9 or height < 7:
+        print("Maze too small to display the 42 pattern.")
+        return set()
+    start_x: int = (width - 7) // 2
+    start_y: int = (height - 5) // 2
+    cells: set[tuple[int, int]] = set()
+    for row_index, line in enumerate(FOUR):
+        for col_index, char in enumerate(line):
+            if char == "#":
+                cells.add((start_x + col_index, start_y + row_index))
+    for row_index, line in enumerate(TWO):
+        for col_index, char in enumerate(line):
+            if char == "#":
+                cells.add((start_x + 4 + col_index, start_y + row_index))
+    return cells
