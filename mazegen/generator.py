@@ -98,3 +98,21 @@ def get_pattern_cells(width: int, height: int) -> set[tuple[int, int]]:
             if char == "#":
                 cells.add((start_x + 4 + col_index, start_y + row_index))
     return cells
+
+
+def has_open_3x3(grid: list[list[int]]) -> bool:
+    """Return True if the grid has a fully open 3x3 area."""
+    height = len(grid)
+    width = len(grid[0])
+    for y in range(height - 2):
+        for x in range(width - 2):
+            all_open = True
+            for dy in range(3):
+                for dx in range(3):
+                    if dx < 2 and grid[y + dy][x + dx] & WALL_BITS["E"]:
+                        all_open = False
+                    if dy < 2 and grid[y + dy][x + dx] & WALL_BITS["S"]:
+                        all_open = False
+            if all_open:
+                return True
+    return False
