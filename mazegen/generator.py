@@ -164,3 +164,21 @@ def braid_dead_ends(grid: list[list[int]], blocked: set[tuple[int, int]], rng: r
                 close_wall(grid, x, y, direction)
             else:
                 break
+
+
+def has_two_routes(grid: list[list[int]], entry: tuple[int, int], exit_: tuple[int, int]) -> bool:
+    """finds a second route independant from the first one"""
+    path = find_path(grid, entry, exit_)
+    if not path:
+        return False
+    x, y = entry
+    for direction in path:
+        close_wall(grid, x, y, direction)
+        alternative = find_path(grid, entry, exit_)
+        open_wall(grid, x, y, direction)
+        if not alternative:
+            return False
+        dx, dy = MOVES[direction]
+        x += dx
+        y += dy
+    return True
