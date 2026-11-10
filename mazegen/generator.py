@@ -16,7 +16,7 @@ def create_closed_grid(width: int, height: int) -> list[list[int]]:
 
 
 def open_wall(grid: list[list[int]], x: int, y: int, direction: str) -> None:
-    """Open the wall between a cell and its neighbour"""
+    """Opens the wall between a cell and its neighbour"""
     dx, dy = MOVES[direction]
     nx = x + dx
     ny = y + dy
@@ -25,7 +25,7 @@ def open_wall(grid: list[list[int]], x: int, y: int, direction: str) -> None:
     grid[ny][nx] &= ~WALL_BITS[opposite]
 
 
-def carve_maze(grid:list[list[int]], width: int, height: int, rng: random.Random, blocked: set[tuple[int, int]]) -> None:
+def carve_maze(grid: list[list[int]], width: int, height: int, rng: random.Random, blocked: set[tuple[int, int]]) -> None:
     visited: list[list[bool]] = [[False for _ in range(width)] for _ in range(height)]
     for bx, by in blocked:
         visited[by][bx] = True
@@ -70,7 +70,7 @@ def find_path(grid, entry: tuple[int, int], exit_: tuple[int, int]) -> list[str]
                 and (nx, ny) not in came_from
             ):
                 came_from[(nx, ny)] = ((x, y), direction)
-                queue.append((nx,ny))
+                queue.append((nx, ny))
     path: list[str] = []
     current: tuple[int, int] = exit_
     while current != entry:
@@ -116,3 +116,51 @@ def has_open_3x3(grid: list[list[int]]) -> bool:
             if all_open:
                 return True
     return False
+
+
+def find_dead_ends(grid: list[list[int]]) -> list[tuple[int, int]]:
+    """Return the coordinates of all dead-end cells."""
+    dead_ends: list[tuple[int, int]] = []
+    height = len(grid)
+    width = len(grid[0])
+    for y in range(height):
+        for x in range(width):
+            walls = bin(grid[y][x]).count("1")
+            if walls == 3:
+                dead_ends.append((x, y))
+    return dead_ends
+
+
+def close_wall(grid: list[list[int]], x: int, y: int, direction: str) -> None:
+    """Closes the wall between a cell and its neighbour"""
+    dx, dy = MOVES[direction]
+    nx = x + dx
+    ny = y + dy
+    grid[y][x] |= WALL_BITS[direction]
+    opposite = WALL_OPPOSITE[direction]
+    grid[ny][nx] |= WALL_BITS[opposite]
+
+
+def braid_dead_ends(grid: list[list[int]], blocked: set[tuple[int, int]], rng: random.Random) -> None:
+    height = len(grid)
+    width = len(grid[0])
+    for x, y in find_dead_ends(grid):
+        if bin(grid[y][x]).count("1") != 3:
+            continue
+        directions = list(MOVES)
+        rng.shuffle(directions)
+        for direction in directions:
+            dx, dy = MOVES[direction]
+            nx = x + dx
+            ny = y + dy
+            if not (0 <= nx < width and 0 <= ny < height):
+                continue
+            if (nx, ny) in blocked:
+                continue
+            if not grid[y][x] & WALL_BITS[direction]:
+                continue
+            open_wall(grid, x ,y, direction)
+            if has_open_3x3(grid):
+                close_wall(grid, x, y, direction)
+            else:
+                break

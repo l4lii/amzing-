@@ -24,10 +24,21 @@ if __name__ == "__main__":
     generator.carve_maze(grid, 8, 6, random.Random(1))
     print(generator.find_path(grid, (0, 0), (7, 5)))
 """
+"""
 if __name__ == "__main__":
-    grid = generator.create_closed_grid(30, 30)
-    blocked = generator.get_pattern_cells(30, 30)
+    grid = generator.create_closed_grid(15, 11)
+    blocked = generator.get_pattern_cells(15, 11)
     rng = random.Random(1)
-    generator.carve_maze(grid, 30, 30, rng, blocked)
+    generator.carve_maze(grid, 15, 11, rng, blocked)
     for row in grid:
         print("".join(f"{c:X}" for c in row))
+    print(len(generator.find_dead_ends(grid)))
+"""
+grid = generator.create_closed_grid(15, 11)
+blocked = generator.get_pattern_cells(15, 11)
+rng = random.Random(1)
+generator.carve_maze(grid, 15, 11, rng, blocked)
+print(len(generator.find_dead_ends(grid)))
+generator.braid_dead_ends(grid, blocked, rng)
+print(len(generator.find_dead_ends(grid)))
+print(generator.has_open_3x3(grid))
