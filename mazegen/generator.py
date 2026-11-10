@@ -25,8 +25,15 @@ def open_wall(grid: list[list[int]], x: int, y: int, direction: str) -> None:
     grid[ny][nx] &= ~WALL_BITS[opposite]
 
 
-def carve_maze(grid: list[list[int]], width: int, height: int, rng: random.Random, blocked: set[tuple[int, int]]) -> None:
-    visited: list[list[bool]] = [[False for _ in range(width)] for _ in range(height)]
+def carve_maze(
+        grid: list[list[int]],
+        width: int, height: int,
+        rng: random.Random,
+        blocked: set[tuple[int, int]]
+        ) -> None:
+    visited: list[list[bool]] = [
+        [False for _ in range(width)] for _ in range(height)
+        ]
     for bx, by in blocked:
         visited[by][bx] = True
     visited[0][0] = True
@@ -49,7 +56,10 @@ def carve_maze(grid: list[list[int]], width: int, height: int, rng: random.Rando
             stack.pop()
 
 
-def find_path(grid, entry: tuple[int, int], exit_: tuple[int, int]) -> list[str]:
+def find_path(
+        grid, entry: tuple[int, int],
+        exit_: tuple[int, int]
+        ) -> list[str]:
     """finds the path to the end and returns the directions"""
     queue = deque([entry])
     came_from: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
@@ -141,7 +151,11 @@ def close_wall(grid: list[list[int]], x: int, y: int, direction: str) -> None:
     grid[ny][nx] |= WALL_BITS[opposite]
 
 
-def braid_dead_ends(grid: list[list[int]], blocked: set[tuple[int, int]], rng: random.Random) -> None:
+def braid_dead_ends(
+        grid: list[list[int]],
+        blocked: set[tuple[int, int]],
+        rng: random.Random
+        ) -> None:
     height = len(grid)
     width = len(grid[0])
     for x, y in find_dead_ends(grid):
@@ -159,14 +173,18 @@ def braid_dead_ends(grid: list[list[int]], blocked: set[tuple[int, int]], rng: r
                 continue
             if not grid[y][x] & WALL_BITS[direction]:
                 continue
-            open_wall(grid, x ,y, direction)
+            open_wall(grid, x, y, direction)
             if has_open_3x3(grid):
                 close_wall(grid, x, y, direction)
             else:
                 break
 
 
-def has_two_routes(grid: list[list[int]], entry: tuple[int, int], exit_: tuple[int, int]) -> bool:
+def has_two_routes(
+        grid: list[list[int]],
+        entry: tuple[int, int],
+        exit_: tuple[int, int]
+        ) -> bool:
     """finds a second route independant from the first one"""
     path = find_path(grid, entry, exit_)
     if not path:
