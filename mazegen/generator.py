@@ -45,7 +45,8 @@ def carve_maze(
             dx, dy = MOVES[direction]
             nx = x + dx
             ny = y + dy
-            if (0 <= nx < width) and (0 <= ny < height) and not visited[ny][nx]:
+            in_bounds = 0 <= nx < width and 0 <= ny < height
+            if in_bounds and not visited[ny][nx]:
                 neighbours.append((direction, nx, ny))
         if neighbours:
             direction, nx, ny = rng.choice(neighbours)
