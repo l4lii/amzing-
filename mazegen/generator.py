@@ -201,3 +201,30 @@ def has_two_routes(
         x += dx
         y += dy
     return True
+
+
+class MazeGenerator:
+    """Generate a maze and its shortest solution"""
+    def __init__(
+            self,
+            width: int,
+            height: int,
+            entry: tuple[int, int],
+            exit_: tuple[int, int],
+            perfect: bool = False,
+            seed: int | None = None,
+    ) -> None:
+        self.width = width
+        self.height = height
+        self.entry = entry
+        self.exit = exit_
+        self.perfect = perfect
+        self.seed = seed
+        self.grid: list[list[int]] = []
+        self.solution: list[str] = []
+        self.pattern_cells: set[tuple[int, int]] = set()
+        if width < 2:
+            raise ValueError("width must be at least 2")
+        if height < 2:
+            raise ValueError("height must be at least 2")
+        
