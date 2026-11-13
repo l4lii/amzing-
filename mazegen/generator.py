@@ -29,15 +29,18 @@ def carve_maze(
         grid: list[list[int]],
         width: int, height: int,
         rng: random.Random,
-        blocked: set[tuple[int, int]]
+        blocked: set[tuple[int, int]],
+        start: tuple[int, int]
         ) -> None:
+    """Carve a perfect maze with a DFS, skipping the blocked cells."""
+    x0, y0 = start
     visited: list[list[bool]] = [
         [False for _ in range(width)] for _ in range(height)
         ]
     for bx, by in blocked:
         visited[by][bx] = True
-    visited[0][0] = True
-    stack: list[tuple[int, int]] = [(0, 0)]
+    visited[y0][x0] = True
+    stack: list[tuple[int, int]] = [start]
     while stack:
         x, y = stack[-1]
         neighbours: list[tuple[str, int, int]] = []
@@ -214,6 +217,16 @@ class MazeGenerator:
             perfect: bool = False,
             seed: int | None = None,
     ) -> None:
+        if width < 2:
+            raise ValueError("width must be at least 2")
+        if height < 2:
+            raise ValueError("height must be at least 2")
+        if (not 0 <= entry[0] < width) and (not 0 <= entry[1] < height):
+            raise ValueError("entry must be inside the grid")
+        if (not 0 <= exit_[0] < width) and (not 0 <= exit_[1] < height):
+            raise ValueError("exit must be inside the grid")
+        if entry == exit_:
+            raise ValueError("entry and exit must be different")
         self.width = width
         self.height = height
         self.entry = entry
@@ -223,8 +236,12 @@ class MazeGenerator:
         self.grid: list[list[int]] = []
         self.solution: list[str] = []
         self.pattern_cells: set[tuple[int, int]] = set()
-        if width < 2:
-            raise ValueError("width must be at least 2")
-        if height < 2:
-            raise ValueError("height must be at least 2")
-        
+
+    def generate(self) -> None:
+        """Generate the maze and compute its solution."""
+        rng = random.Random(self.seed)
+        self.grid = create_closed_grid(self.width, self.height)
+        self.patterns_cells = get_pattern_cells(self.width, self.height)
+        carve_maze(self.grid, self.width, self.height, rng, self.pattern_cells, self.entry)
+        if not self.perfect: braid_dead_ends(self.grid, self.pattern_cells, rng)
+        self.solution = find_path(self.grid, self.entry, self.exit)
