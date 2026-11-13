@@ -242,6 +242,14 @@ class MazeGenerator:
         rng = random.Random(self.seed)
         self.grid = create_closed_grid(self.width, self.height)
         self.patterns_cells = get_pattern_cells(self.width, self.height)
-        carve_maze(self.grid, self.width, self.height, rng, self.pattern_cells, self.entry)
-        if not self.perfect: braid_dead_ends(self.grid, self.pattern_cells, rng)
+        carve_maze(
+            self.grid,
+            self.width,
+            self.height,
+            rng,
+            self.pattern_cells,
+            self.entry
+            )
+        if not self.perfect:
+            braid_dead_ends(self.grid, self.pattern_cells, rng)
         self.solution = find_path(self.grid, self.entry, self.exit)
