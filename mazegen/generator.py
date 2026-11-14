@@ -206,6 +206,23 @@ def has_two_routes(
     return True
 
 
+def corners_and_center_open(grid: list[list[int]]) -> bool:
+    height = len(grid)
+    width = len(grid[0])
+    points: list[tuple[int, int]] = [
+        (0, 0),
+        (width - 1, 0),
+        (0, height - 1),
+        (width - 1, height - 1),
+        (width // 2, height // 2)
+    ]
+    for x, y in points:
+        walls = bin(grid[y][x]. count("1"))
+        if walls > 2:
+            return False
+    return True
+
+
 class MazeGenerator:
     """Generate a maze and its shortest solution"""
     def __init__(
@@ -241,7 +258,9 @@ class MazeGenerator:
         """Generate the maze and compute its solution."""
         rng = random.Random(self.seed)
         self.grid = create_closed_grid(self.width, self.height)
-        self.patterns_cells = get_pattern_cells(self.width, self.height)
+        self.pattern_cells = get_pattern_cells(self.width, self.height)
+        if self.entry in self.pattern_cells or self.exit in self.pattern_cells:
+            raise ValueError("entry and exit must not be inside the 42 pattern")
         carve_maze(
             self.grid,
             self.width,
@@ -249,7 +268,8 @@ class MazeGenerator:
             rng,
             self.pattern_cells,
             self.entry
-            )
+        )
         if not self.perfect:
             braid_dead_ends(self.grid, self.pattern_cells, rng)
         self.solution = find_path(self.grid, self.entry, self.exit)
+        
