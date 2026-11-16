@@ -207,6 +207,7 @@ def has_two_routes(
 
 
 def corners_and_center_open(grid: list[list[int]]) -> bool:
+    """Return True if the four corners and the centre are open."""
     height = len(grid)
     width = len(grid[0])
     points: list[tuple[int, int]] = [
@@ -217,7 +218,7 @@ def corners_and_center_open(grid: list[list[int]]) -> bool:
         (width // 2, height // 2)
     ]
     for x, y in points:
-        walls = bin(grid[y][x]. count("1"))
+        walls = bin(grid[y][x]).count("1")
         if walls > 2:
             return False
     return True
@@ -272,4 +273,3 @@ class MazeGenerator:
         if not self.perfect:
             braid_dead_ends(self.grid, self.pattern_cells, rng)
         self.solution = find_path(self.grid, self.entry, self.exit)
-        
