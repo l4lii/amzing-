@@ -61,7 +61,7 @@ def carve_maze(
 
 
 def find_path(
-        grid, entry: tuple[int, int],
+        grid: list[list[int]], entry: tuple[int, int],
         exit_: tuple[int, int]
         ) -> list[str]:
     """finds the path to the end and returns the directions"""
@@ -239,9 +239,9 @@ class MazeGenerator:
             raise ValueError("width must be at least 2")
         if height < 2:
             raise ValueError("height must be at least 2")
-        if (not 0 <= entry[0] < width) and (not 0 <= entry[1] < height):
+        if not (0 <= entry[0] < width and 0 <= entry[1] < height):
             raise ValueError("entry must be inside the grid")
-        if (not 0 <= exit_[0] < width) and (not 0 <= exit_[1] < height):
+        if not (0 <= exit_[0] < width and 0 <= exit_[1] < height):
             raise ValueError("exit must be inside the grid")
         if entry == exit_:
             raise ValueError("entry and exit must be different")
@@ -261,7 +261,8 @@ class MazeGenerator:
         self.grid = create_closed_grid(self.width, self.height)
         self.pattern_cells = get_pattern_cells(self.width, self.height)
         if self.entry in self.pattern_cells or self.exit in self.pattern_cells:
-            raise ValueError("entry and exit must not be inside the 42 pattern")
+            raise ValueError(
+                "entry and exit must not be inside the 42 pattern")
         carve_maze(
             self.grid,
             self.width,
