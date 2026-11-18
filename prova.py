@@ -59,7 +59,7 @@ for bad in [((3, 99), (0, 0)), ((0, 0), (0, 0)), ((0, 0), (99, 3))]:
     except ValueError as error:
         print("Errore:", error)
 """
-"""
+
 from mazegen.generator import MazeGenerator
 
 gen = MazeGenerator(15, 11, (0, 0), (14, 10), perfect=False, seed=1)
@@ -68,6 +68,7 @@ for row in gen.grid:
     print("".join(f"{c:X}" for c in row))
 print(gen.solution)
 print(len(gen.pattern_cells))
+
 """
 from mazegen.generator import MazeGenerator, corners_and_center_open
 
@@ -78,3 +79,4 @@ for seed in range(200):
     if not corners_and_center_open(gen.grid):
         failures += 1
 print("failures:", failures, "su 200")
+"""

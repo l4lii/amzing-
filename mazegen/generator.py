@@ -85,6 +85,8 @@ def find_path(
             ):
                 came_from[(nx, ny)] = ((x, y), direction)
                 queue.append((nx, ny))
+    if exit_ not in came_from:
+        return []
     path: list[str] = []
     current: tuple[int, int] = exit_
     while current != entry:

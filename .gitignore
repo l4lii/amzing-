@@ -2,3 +2,7 @@
 __pycache__
 .mypy_cache
 .pytest_cache
+build/
+*.egg-info/
+tmp/
+maze_analyzer.py
