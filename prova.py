@@ -60,8 +60,6 @@ for bad in [((3, 99), (0, 0)), ((0, 0), (0, 0)), ((0, 0), (99, 3))]:
         print("Errore:", error)
 """
 
-from mazegen.generator import MazeGenerator
-
 gen = MazeGenerator(15, 11, (0, 0), (14, 10), perfect=False, seed=1)
 gen.generate()
 for row in gen.grid:
