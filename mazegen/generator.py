@@ -162,6 +162,7 @@ def braid_dead_ends(
         blocked: set[tuple[int, int]],
         rng: random.Random
         ) -> None:
+    """removes the dead ends"""
     height = len(grid)
     width = len(grid[0])
     for x, y in find_dead_ends(grid):
