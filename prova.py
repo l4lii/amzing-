@@ -1,6 +1,6 @@
-from mazegen import generator
+"""from mazegen import generator"""
 from mazegen.generator import MazeGenerator
-import random
+"""import random"""
 
 if __name__ == "__main__":
     """
