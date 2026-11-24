@@ -16,8 +16,8 @@ RESET = "\033[0m"
 WALL_COLORS = ["47", "44", "46", "45"]
 ENTRY_COLOR = "42"
 EXIT_COLOR = "41"
-PATH_COLOR = "43"
 PATTERN_COLOR = "48;5;208"
+PATH_COLOR = PATTERN_COLOR
 
 MENU = """
 === A-Maze-ing ===
