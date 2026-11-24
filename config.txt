@@ -1,0 +1,19 @@
+# A-Maze-ing default configuration
+# Format: KEY=VALUE (lines starting with # are comments)
+
+# Maze size (number of cells)
+WIDTH=25
+HEIGHT=25
+
+# Entry and exit coordinates (x,y), origin (0,0) top-left
+ENTRY=1,2
+EXIT=23,24
+
+# File where the maze is written
+OUTPUT_FILE=maze.txt
+
+# True = exactly one path between entry and exit
+PERFECT=False
+
+# Optional: fixed seed for reproducible mazes
+# SEED=42
